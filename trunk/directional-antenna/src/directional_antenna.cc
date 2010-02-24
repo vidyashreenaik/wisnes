@@ -53,15 +53,11 @@ double DirectionalAntenna::getElevationAngle(double dX, double dY, double dZ) {
 	return 0.0;
 }
 
-double DirectionalAntenna::getAzimuthAngleRelativeToBoresight(double dX,
-		double dY, double dZ) {
-	double azimuthAngle = getAzimuthAngle(dX, dY, dZ);
-	// adjust angle relative to the boresight direction
-	double relativeAzimuthAngle = azimuthAngle - boresight_;
+double DirectionalAntenna::getAngleRelativeToBoresight(double angle) {
+	double relativeAngle = angle - boresight_;
 	// make sure the angle is between -180 and 180
-	for (/*do nothing*/; relativeAzimuthAngle < -180.0; relativeAzimuthAngle
-			+= 360.0)
+	for (/*do nothing*/; relativeAngle < -180.0; relativeAngle += 360.0)
 		;
 
-	return relativeAzimuthAngle;
+	return relativeAngle;
 }

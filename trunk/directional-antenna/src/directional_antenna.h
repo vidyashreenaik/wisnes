@@ -25,7 +25,7 @@ public:
 protected:
     double getAzimuthAngle(double dX, double dY, double dZ);
     double getElevationAngle(double dX, double dY, double dZ);
-    double getAzimuthAngleRelativeToBoresight(double dX, double dY, double dZ);
+    double getAngleRelativeToBoresight(double angle);
     double boresight_; /* pointing direction (deg) */
     double beamwidth_; /* width of the main beam (deg) */
     int id_; /* numeric ID to keep track of antennas for debug */

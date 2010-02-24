@@ -20,9 +20,11 @@ public:
 } class_FlatTopDirectionalAntenna;
 
 FlatTopDirectionalAntenna::FlatTopDirectionalAntenna() :
-	mainGain_(0.0), sideGain_(0.0) {
+	mainGain_(0.0), sideGain_(0.0), nullWidth_(0.0), nullAngle_(0.0) {
 	bind("Gm_", &mainGain_);
 	bind("Gs_", &sideGain_);
+	bind("NullWidth_", &nullWidth_);
+	bind("NullAngle_", &nullAngle_);
 }
 
 FlatTopDirectionalAntenna::FlatTopDirectionalAntenna(
@@ -59,31 +61,12 @@ int FlatTopDirectionalAntenna::command(int argc, const char* const * argv) {
 double FlatTopDirectionalAntenna::getTxGain(double dX, double dY, double dZ,
 		double lambda) {
 	double gain = sideGain_;
+	double azimuthAngle = getAngleRelativeToBoresight(getAzimuthAngle(dX, dY, dZ));
 
-	double azimuthAngle = getAzimuthAngleRelativeToBoresight(dX, dY, dZ);
-
-	double halfBeamwidth = beamwidth_ / 2;
-
-	double lowerBound = boresight_ - halfBeamwidth;
-	if (lowerBound < 0)
-		lowerBound = lowerBound + 360;
-
-	double upperBound = boresight_ + halfBeamwidth;
-	if (upperBound >= 360)
-		upperBound = upperBound - 360;
-
-	if (upperBound >= lowerBound) {
-		if (azimuthAngle >= lowerBound && azimuthAngle <= upperBound) {
-			// e.g. between 0 and 60 degrees and angle is 10
-			gain = mainGain_;
-		}
-	} else {
-		if ((azimuthAngle >= lowerBound && azimuthAngle < 360) || (azimuthAngle
-				>= 0 && azimuthAngle <= upperBound)) {
-			// e.g. between 330 and 30 degrees and angle is 340
-			gain = mainGain_;
-		}
+	if (isAngleWithin(azimuthAngle, boresight_, beamwidth_)) {
+		gain = mainGain_;
 	}
+
 	// Convert back to linear units as expected by propagation.cc
 	gain = pow(10, gain / 10.0);
 
@@ -92,6 +75,37 @@ double FlatTopDirectionalAntenna::getTxGain(double dX, double dY, double dZ,
 
 double FlatTopDirectionalAntenna::getRxGain(double dX, double dY, double dZ,
 		double lambda) {
+	double nullAngle = getAngleRelativeToBoresight(nullAngle_);
+	// If there is a null, return 0
+	if (isAngleWithin(nullAngle, nullAngle_, nullWidth_)) {
+		return 0.0;
+	}
+
+	// Return the same power as the one that would've been transmitted
 	return getTxGain(dX, dY, dZ, lambda);
 }
 
+bool FlatTopDirectionalAntenna::isAngleWithin(double angle, double center, double width) {
+	double halfWidth = beamwidth_ / 2;
+
+	double lowerBound = center - halfWidth;
+	if (lowerBound < 0)
+		lowerBound = lowerBound + 360;
+
+	double upperBound = center + halfWidth;
+	if (upperBound >= 360)
+		upperBound = upperBound - 360;
+
+	if (upperBound >= lowerBound) {
+		if (angle >= lowerBound && angle <= upperBound) {
+			return true;
+		}
+	} else {
+		if ((angle >= lowerBound && angle < 360) ||
+				(angle >= 0 && angle <= upperBound)) {
+			return true;
+		}
+	}
+
+	return false;
+}

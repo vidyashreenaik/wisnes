@@ -76,7 +76,7 @@ double PatternDirectionalAntenna::getTxGain(double dX, double dY, double dZ,
 		double lambda) {
 	double gain = 0.0;
 
-	double angle = getAzimuthAngleRelativeToBoresight(dX, dY, dZ);
+	double angle = getAngleRelativeToBoresight(getAzimuthAngle(dX, dY, dZ));
 
 	map<double, double>::iterator iter = anglesToGains_.find(angle);
 	if (iter == anglesToGains_.end()) {

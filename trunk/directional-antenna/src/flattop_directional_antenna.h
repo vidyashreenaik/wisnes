@@ -20,11 +20,15 @@ public:
 	virtual int command(int, const char * const *);
 
 private:
+    bool isAngleWithin(double angle, double center, double width);
+
 	static list<DirectionalAntenna*> copies_;
 
 	double mainGain_; /* Main lobe gain */
 	double sideGain_; /* Side lobe gain */
+
+	double nullAngle_; /* position of the null (deg) */
+	double nullWidth_; /* width of the null (deg) */
 };
 
 #endif /* __flattop_directional_antenna_h__ */
-
