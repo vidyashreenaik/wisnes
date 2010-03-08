@@ -22,7 +22,6 @@ DirectionalAntenna::DirectionalAntenna(const DirectionalAntenna &antenna) :
 
 	bind("Id_", &id_);
 	bind("Debug_", &debug_);
-
 }
 
 DirectionalAntenna::~DirectionalAntenna() {

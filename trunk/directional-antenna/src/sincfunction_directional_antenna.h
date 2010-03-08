@@ -1,15 +1,15 @@
-#ifndef __flattop_directional_antenna_h__
-#define __flattop_directional_antenna_h__
+#ifndef __sincfunction_directional_antenna_h__
+#define __sincfunction_directional_antenna_h__
 
 #include <list>
 #include "directional_antenna.h"
 
-class FlatTopDirectionalAntenna: public DirectionalAntenna {
+class SincFunctionDirectionalAntenna: public DirectionalAntenna {
 
 public:
-	FlatTopDirectionalAntenna();
-	FlatTopDirectionalAntenna(const FlatTopDirectionalAntenna& antenna);
-	virtual ~FlatTopDirectionalAntenna();
+	SincFunctionDirectionalAntenna();
+	SincFunctionDirectionalAntenna(const SincFunctionDirectionalAntenna& antenna);
+	virtual ~SincFunctionDirectionalAntenna();
 
 	virtual double getTxGain(double dX, double dY, double dZ, double lambda);
 	virtual double getRxGain(double dX, double dY, double dZ, double lambda);
@@ -25,10 +25,9 @@ private:
 	static list<DirectionalAntenna*> copies_;
 
 	double mainGain_; /* Main lobe gain */
-	double sideGain_; /* Side lobe gain */
 
 	double nullLocation_; /* position of the null (deg) */
 	double nullWidth_; /* width of the null (deg) */
 };
 
-#endif /* __flattop_directional_antenna_h__ */
+#endif /* __sincfunction_directional_antenna_h__ */

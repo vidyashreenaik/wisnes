@@ -8,14 +8,14 @@ set val(netif)          Phy/WirelessPhy                     ;# network interface
 set val(mac)            Mac/802_11                          ;# MAC type
 set val(ifq)            Queue/DropTail/PriQueue             ;# interface queue type
 set val(ll)             LL                                  ;# link layer type
-set val(ant)            Antenna/DirectionalAntenna/Practical;# antenna model
+set val(ant)            Antenna/DirectionalAntenna/FlatTop  ;# antenna model
 set val(ifqlen)         50                                  ;# max packet in ifq
 set val(nn)             2                                   ;# number of mobilenodes
 set val(rp)             AODV                                ;# routing protocol
-set val(x)		        500
-set val(y)		        500
+set val(x)		500
+set val(y)		500
 
-Antenna/DirectionalAntenna/Practical set Debug_ 1
+Antenna/DirectionalAntenna/FlatTop set Debug_ 1
 # Initialize Global Variables
 set ns_		[new Simulator]
 set tracefd     [open directional_antenna_sample.tr w]
@@ -49,13 +49,14 @@ $ns_ node-config -adhocRouting $val(rp) \
 		-routerTrace ON \
 		-macTrace ON \
 		-movementTrace OFF \
-		-channel $chan_ 
+		-channel $chan_
 
+Antenna/DirectionalAntenna/FlatTop set Boresight_ 0.0
 set node_(0) [$ns_ node]
+Antenna/DirectionalAntenna/FlatTop set Boresight_ 180.0
 set node_(1) [$ns_ node]
 
 $node_(0) random-motion 0
-Antenna/DirectionalAntenna/Practical set Azimuth_ 180
 $node_(1) random-motion 0
 
 for {set i 0} {$i < $val(nn)} {incr i} {
@@ -63,28 +64,31 @@ for {set i 0} {$i < $val(nn)} {incr i} {
 }
 
 #
+# Check antenna directions
+#
+
+set antenna_(0) [$node_(0) getAntenna 0]
+set antenna_(1) [$node_(1) getAntenna 0]
+
+puts [format "Ant 1: Dir %3.2f | Ant 2: dir %3.2f" [$antenna_(0) set Boresight_] [$antenna_(1) set Boresight_]]
+
+$antenna_(0) set Boresight_ 90.0
+$antenna_(1) set Boresight_ 270.0
+
+set antenna_(0) [$node_(0) getAntenna 0]
+set antenna_(1) [$node_(1) getAntenna 0]
+
+puts [format "Ant 1: Dir %3.2f | Ant 2: dir %3.2f" [$antenna_(0) set Boresight_] [$antenna_(1) set Boresight_]]
+#
 # Provide initial (X,Y, for now Z=0) co-ordinates for mobilenodes
 #
 $node_(0) set X_ 50.0
 $node_(0) set Y_ 50.0
 $node_(0) set Z_ 0.0
 
-$node_(1) set X_ 150.0
+$node_(1) set X_ 200.0
 $node_(1) set Y_ 50.0
 $node_(1) set Z_ 0.0
-
-#
-# Now produce some simple node movements
-# Node_(1) starts to move towards node_(0)
-#
-#$ns_ at 3.0 "$node_(1) setdest 50.0 40.0 25.0"
-#$ns_ at 3.0 "$node_(0) setdest 48.0 38.0 5.0"
-
-# Node_(1) then starts to move away from node_(0)
-#$ns_ at 20.0 "$node_(1) setdest 490.0 480.0 30.0" 
-
-# Setup traffic flow between nodes
-# TCP connections between node_(0) and node_(1)
 
 set tcp [new Agent/TCP]
 $tcp set class_ 2
@@ -94,7 +98,7 @@ $ns_ attach-agent $node_(1) $sink
 $ns_ connect $tcp $sink
 set ftp [new Application/FTP]
 $ftp attach-agent $tcp
-$ns_ at 3.0 "$ftp start" 
+$ns_ at 3.0 "$ftp start"
 
 #
 # Tell nodes when the simulation ends

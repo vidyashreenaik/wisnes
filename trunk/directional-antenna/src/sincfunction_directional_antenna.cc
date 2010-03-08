@@ -4,48 +4,47 @@
 #include <cstdio>
 #include <cstdlib>
 
-#include "flattop_directional_antenna.h"
+#include "sincfunction_directional_antenna.h"
 
-list<DirectionalAntenna*> FlatTopDirectionalAntenna::copies_;
+list<DirectionalAntenna*> SincFunctionDirectionalAntenna::copies_;
 
 static class FlatTopDirectionalAntennaClass: public TclClass {
 public:
 	FlatTopDirectionalAntennaClass() :
-		TclClass("Antenna/DirectionalAntenna/FlatTop") {
+		TclClass("Antenna/DirectionalAntenna/SincFunction") {
 	}
 
 	TclObject* create(int, const char* const *) {
-		return (new FlatTopDirectionalAntenna);
+		return (new SincFunctionDirectionalAntenna);
 	}
 } class_FlatTopDirectionalAntenna;
 
-FlatTopDirectionalAntenna::FlatTopDirectionalAntenna() :
-	mainGain_(0.0), sideGain_(0.0), nullWidth_(0.0), nullLocation_(0.0) {
+SincFunctionDirectionalAntenna::SincFunctionDirectionalAntenna() :
+	mainGain_(0.0), nullWidth_(0.0), nullLocation_(0.0) {
 	bind("Gm_", &mainGain_);
-	bind("Gs_", &sideGain_);
 	bind("NullWidth_", &nullWidth_);
 	bind("NullLocation_", &nullLocation_);
 }
 
-FlatTopDirectionalAntenna::FlatTopDirectionalAntenna(
-		const FlatTopDirectionalAntenna& antenna) :
-	DirectionalAntenna(antenna), mainGain_(antenna.mainGain_), sideGain_(
-			antenna.sideGain_) {
+SincFunctionDirectionalAntenna::SincFunctionDirectionalAntenna(
+		const SincFunctionDirectionalAntenna& antenna) :
+	DirectionalAntenna(antenna), mainGain_(antenna.mainGain_) {
 	bind("Gm_", &mainGain_);
-	bind("Gs_", &sideGain_);
+	bind("NullWidth_", &nullWidth_);
+	bind("NullLocation_", &nullLocation_);
 }
 
-FlatTopDirectionalAntenna::~FlatTopDirectionalAntenna() {
+SincFunctionDirectionalAntenna::~SincFunctionDirectionalAntenna() {
 }
 
-Antenna * FlatTopDirectionalAntenna::copy() {
-	DirectionalAntenna* copy = new FlatTopDirectionalAntenna(*this);
+Antenna * SincFunctionDirectionalAntenna::copy() {
+	DirectionalAntenna* copy = new SincFunctionDirectionalAntenna(*this);
 	copies_.push_back(copy);
 
 	return copy;
 }
 
-void FlatTopDirectionalAntenna::release() {
+void SincFunctionDirectionalAntenna::release() {
 	if (!copies_.empty()) {
 		DirectionalAntenna* antenna = copies_.front();
 		copies_.pop_front();
@@ -54,18 +53,15 @@ void FlatTopDirectionalAntenna::release() {
 	}
 }
 
-int FlatTopDirectionalAntenna::command(int argc, const char* const * argv) {
+int SincFunctionDirectionalAntenna::command(int argc, const char* const * argv) {
 	return DirectionalAntenna::command(argc, argv);
 }
 
-double FlatTopDirectionalAntenna::getTxGain(double dX, double dY, double dZ,
+double SincFunctionDirectionalAntenna::getTxGain(double dX, double dY, double dZ,
 		double lambda) {
-	double gain = sideGain_;
 	double azimuthAngle = getAngleRelativeToBoresight(getAzimuthAngle(dX, dY, dZ));
-
-	if (isAngleWithin(azimuthAngle, boresight_, beamwidth_)) {
-		gain = mainGain_;
-	}
+	double gain = sin(mainGain_ * PI * (cos(azimuthAngle - 1) / 4)) /
+			sin(PI * (cos(azimuthAngle - 1) / 4));
 
 	// Convert back to linear units as expected by propagation.cc
 	gain = pow(10, gain / 10.0);
@@ -73,7 +69,7 @@ double FlatTopDirectionalAntenna::getTxGain(double dX, double dY, double dZ,
 	return gain;
 }
 
-double FlatTopDirectionalAntenna::getRxGain(double dX, double dY, double dZ,
+double SincFunctionDirectionalAntenna::getRxGain(double dX, double dY, double dZ,
 		double lambda) {
 	double nullAngle = getAngleRelativeToBoresight(nullLocation_);
 	// If there is a null, return 0
@@ -85,7 +81,7 @@ double FlatTopDirectionalAntenna::getRxGain(double dX, double dY, double dZ,
 	return getTxGain(dX, dY, dZ, lambda);
 }
 
-bool FlatTopDirectionalAntenna::isAngleWithin(double angle, double center, double width) {
+bool SincFunctionDirectionalAntenna::isAngleWithin(double angle, double center, double width) {
 	double halfWidth = beamwidth_ / 2;
 
 	double lowerBound = center - halfWidth;
