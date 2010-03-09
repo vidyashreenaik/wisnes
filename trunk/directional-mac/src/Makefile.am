@@ -20,4 +20,3 @@ embeddedtcl.cc: Makefile $(TCL_FILES)
 		cat $(TCL_FILES) | @TCL2CPP@ Directional_macTclCode > embeddedtcl.cc
 
 EXTRA_DIST =  $(TCL_FILES)
-
