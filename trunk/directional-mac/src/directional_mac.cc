@@ -445,7 +445,8 @@ MAC_MIB::MAC_MIB(Mac802_11DVCS *parent) {
 
 DirectionalNav::DirectionalNav(double width, double direction,
 		double expirationTime) :
-	navTimer_(this), width_(width), direction_(direction), expirationTime_(expirationTime) {
+	navTimer_(this), width_(width), direction_(direction), expirationTime_(
+			expirationTime) {
 	assert(width_ > 0.0 && width_ <= 360);
 	assert(direction_ > 0.0 && direction_ < 360);
 }
@@ -609,15 +610,15 @@ void Mac802_11DVCS::trace_event(char *eventtype, Packet *p) {
 	//struct hdr_cmn *ch = HDR_CMN(p);
 
 	if (wrk != 0) {
-		sprintf(wrk, "E -t "TIME_FORMAT" %s %2x ", et_->round(
-				Scheduler::instance().clock()), eventtype,
-		//ETHER_ADDR(dh->dh_sa)
-				ETHER_ADDR(dh->dh_ta));
+		sprintf	(wrk, "E -t "TIME_FORMAT" %s %2x ", et_->round(
+					Scheduler::instance().clock()), eventtype,
+			//ETHER_ADDR(dh->dh_sa)
+			ETHER_ADDR(dh->dh_ta));
 	}
 	if (nwrk != 0) {
 		sprintf(nwrk, "E -t "TIME_FORMAT" %s %2x ", et_->round(
-				Scheduler::instance().clock()), eventtype,
-		//ETHER_ADDR(dh->dh_sa)
+						Scheduler::instance().clock()), eventtype,
+				//ETHER_ADDR(dh->dh_sa)
 				ETHER_ADDR(dh->dh_ta));
 	}
 	et_->dump();
@@ -981,7 +982,7 @@ void Mac802_11DVCS::ProbeHandler() {
 				&& Recv_Busy_ == 0 && OnMaxChannelTime == 0) {
 
 			if (probe_delay == 1) { // Probe delay over - Active Scan starts here, when the ap_table has not been built yet
-				sendPROBEREQ(MAC_BROADCAST);
+				sendPROBEREQ( MAC_BROADCAST);
 				probe_delay = 0;
 				return;
 			} else {
@@ -1572,7 +1573,7 @@ void Mac802_11DVCS::RetransmitDATA() {
 		authenticated = 0;
 		handoff = 1;
 		ScanType_ = ACTIVE;
-		sendPROBEREQ(MAC_BROADCAST);
+		sendPROBEREQ( MAC_BROADCAST);
 		return;
 	}
 	if (*rcount >= thresh) {
@@ -2268,7 +2269,8 @@ void Mac802_11DVCS::recvACK(Packet *p) {
 
 /* AP's association table funtions
  */
-void Mac802_11DVCS::update_client_table(int num, int auth_status, int assoc_status) {
+void Mac802_11DVCS::update_client_table(int num, int auth_status,
+		int assoc_status) {
 
 	std::list<client_table>::iterator it;
 	for (it = client_list1.begin(); it != client_list1.end(); it++) {

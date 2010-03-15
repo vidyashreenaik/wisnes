@@ -1,14 +1,15 @@
 #ifndef __directional_mac_h__
 #define __directional_mac_h__
 
-#include "address.h"
-#include "ip.h"
-
-#include "marshall.h"
 #include <math.h>
 #include <stddef.h>
 #include <list>
 #include <map>
+
+#include "address.h"
+#include "ip.h"
+#include "marshall.h"
+#include "wireless_phy_interface.h"
 
 class EventTrace;
 
@@ -717,10 +718,11 @@ private:
 		while (iter != directionalNavs_.end()) {
 			DirectionalNav* directionalNav = (*iter).second;
 			// If any of the directional NAV is busy
-			if (directionalNav->getExpirationTime()
-					> Scheduler::instance().clock()) {
-				// and it covers the given direction
-				if (directionalNav->isCovering(direction)) {
+			// and it covers the given direction
+			if (directionalNav->isCovering(direction)) {
+				if (directionalNav->getExpirationTime()
+						> Scheduler::instance().clock()) {
+
 					return 0; // return false
 				}
 			}

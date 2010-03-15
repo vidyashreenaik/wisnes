@@ -2,6 +2,8 @@ lib_LTLIBRARIES = libdirectional_mac.la
 
 libdirectional_mac_la_SOURCES = directional_mac.cc\
                 directional_mac.h\
+                wireless_phy_interface.cc\
+                wireless_phy_interface.h\
                 initlib.cc
 
 nodist_libdirectional_mac_la_SOURCES = embeddedtcl.cc
