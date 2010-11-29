@@ -1,0 +1,17 @@
+DESCRIPTION
+    Miscellenious modules for NS-2 Simulation ranging from routing protocols to 
+    random number generators.
+    
+    Each project sub-directory contains a small README file describing the
+    the project as well as it's current state
+    
+REQUIREMENT
+    All these project require NS-2 2.33 or higher (NS-2.31/2.32 with Dynamic 
+    loading patch might work as well)
+
+INSTALLATION
+    All the projects were developed using the new NS-2 dynamic library loading
+    mechanism. Hence the installation is as described in the NS-2 manual. Sample
+    folders for each project contains sample script on how to load and use these
+    modules.
+

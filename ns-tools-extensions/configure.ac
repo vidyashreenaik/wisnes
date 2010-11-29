@@ -1,0 +1,27 @@
+AC_INIT(ns_tools_extensions,1.0)
+AM_INIT_AUTOMAKE
+AC_PROG_CXX
+AC_PROG_MAKE_SET
+
+AC_DISABLE_STATIC
+AC_LIBTOOL_WIN32_DLL
+AC_PROG_LIBTOOL
+
+AC_PATH_NS_ALLINONE
+
+
+AC_CONFIG_MACRO_DIR([m4])
+
+CFLAGS="${CFLAGS=} -Wall -g"
+
+AC_DEFINE(CPP_NAMESPACE,std)
+
+AC_CONFIG_FILES([
+		Makefile
+		src/Makefile
+		samples/Makefile
+		m4/Makefile
+ 		])
+
+AC_OUTPUT
+

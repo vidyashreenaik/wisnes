@@ -1,0 +1,4 @@
+Extension of NS-2 HWMP implementation to support Energy Aware routing metric
+    
+Tested on NS-2 version 2.33 / 2.34
+

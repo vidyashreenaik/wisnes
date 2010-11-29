@@ -1,0 +1,8 @@
+Implementation of directional antenna for NS-2
+
+Current implementation includes:
+    - Loading of directional antenna pattern from a file
+    - Flat-top antenna
+    
+Tested on NS-2 version 2.33 / 2.34
+
