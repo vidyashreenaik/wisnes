@@ -1,0 +1,4 @@
+Port of standard NS-2 AODV implementation to NSMIRACLE framework
+    
+Tested on NS-2 version 2.33 / 2.34, NSMIRACLE version 1.22
+

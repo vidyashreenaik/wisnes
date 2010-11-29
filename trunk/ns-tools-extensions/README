@@ -1,0 +1,7 @@
+Extension for NS-2 tools
+
+Current extensions include:
+    Poisson random number generator
+    
+Tested on NS-2 version 2.33 and 2.34
+

@@ -1,0 +1,4 @@
+Extension of NS-2 AODV implementation to support Round-Trip-Time routing metric
+    
+Tested on NS-2 version 2.33 / 2.34
+
